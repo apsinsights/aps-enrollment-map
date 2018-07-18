@@ -1,6 +1,6 @@
 # APS Enrollment Map: How-To
 
-This page has both a school lookup tool and performance color coding. The page is built in Javascript and uses [Leaflet.js](https://leafletjs.com/) for mapping.
+This page has both a school lookup tool and performance color coding. The page is built in Javascript and uses [Leaflet.js](https://leafletjs.com/) for mapping. Read-on to learn how to build it:
 
 Start by [initiallizing a Leaflet map](https://leafletjs.com/examples/quick-start/):
 
