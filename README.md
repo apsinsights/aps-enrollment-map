@@ -63,7 +63,8 @@ In the code snippet above, we're passing functions for the **style** and **onEac
 
 ```javascript
 var metric ='CCRPI';
-//Set metric to "CCRPI" so a value is set on page load. We'll change this later when we build a filter to select a metric.
+//Set metric to "CCRPI" so a value is set on page load. 
+	//We'll change this later when we build a filter to select a metric.
 
 function colorMap(feature){
 		var fillColor,
