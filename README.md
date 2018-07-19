@@ -2,6 +2,8 @@
 
 This page has both a school lookup tool and performance color coding. The page is built in Javascript and uses [Leaflet.js](https://leafletjs.com/) for mapping. Read-on to learn how to build it:
 
+##Create Map
+
 Start by including leaflet files in your header and adding a div for the map:
 
 ```html
@@ -45,6 +47,8 @@ var performMap = L.map('mapid').setView([33.77, -84.41], 11);
 The map will look  something like this:
 
 ![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Initialize%20Map.PNG)
+
+##Add Polygons
 
 Next, upload school zone shapes as a geojson file and use the Leaflet function [GeoJSON](https://leafletjs.com/reference-1.3.2.html#geojson) to plot said shapes:
 
@@ -114,7 +118,9 @@ With colorMap defined, the map will look like this:
 
 ![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Map%20with%20polygons.PNG)
 
-Next, add the **mapTips** function, which is called by **onEachFeature**. This adds a tooltip to each polygon.
+##Add tooltips
+
+Next, add the **mapTips** function, which is called by **onEachFeature**. This adds a tooltip to each polygon. Notice that we're still using data from our geoJSON file loaded above.
 
 ```javascript
 function mapTips(feature, layer ){
@@ -154,3 +160,9 @@ function mapTips(feature, layer ){
 	)
 }
 ```
+
+Now we have tooltips:
+
+![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Map%20Tooltip.PNG?raw=true)
+
+
