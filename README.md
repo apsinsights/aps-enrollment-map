@@ -231,4 +231,4 @@ To style to color legend, we use the div name for the color legend (the color le
 
 Now we have a color legend and a hover info button:
 
-![]()
+![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Hover%20button%20example.gif?raw=true)
