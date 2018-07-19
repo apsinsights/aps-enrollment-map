@@ -2,7 +2,26 @@
 
 This page has both a school lookup tool and performance color coding. The page is built in Javascript and uses [Leaflet.js](https://leafletjs.com/) for mapping. Read-on to learn how to build it:
 
-Start by [initiallizing a Leaflet map](https://leafletjs.com/examples/quick-start/):
+Start by including leaflet files in your header and adding a div for the map:
+
+```html
+<head>
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
+   integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+   crossorigin=""/>
+	
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"
+   integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
+   crossorigin=""></script>
+</head>
+
+<body>
+	<div id="mapid" style="height: 500px";></div>
+</body>
+```
+
+Next, [initialize a Leaflet map](https://leafletjs.com/examples/quick-start/):
 
 ```javascript
 var performMap = L.map('mapid').setView([33.77, -84.41], 11);
@@ -38,9 +57,9 @@ Next, upload school zone shapes as a geojson file and use the Leaflet function [
 		mapFill.bringToBack();
 	})
 ```
-With the [JSON Viewer extension](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) in chrome you can view the [enrollment-map-elementary-zones](https://apsinsights.org/documents/2018/05/enrollment-map-elementary-zones.txt) file we load in the code.
+With the [JSON Viewer extension](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) in chrome you can view the [enrollment-map-elementary-zones](https://apsinsights.org/documents/2018/05/enrollment-map-elementary-zones.txt) file that we're loading above.
 
-To create the GeoJSON file, we used the [geojsonio](https://github.com/ropensci/geojsonio) package in R to load a school zone shapefile and then merge it with performance data. GIS programs like arcGIS or QGIS can also convert do this, but the R code is helpful to quickly refresh the file each time new performance data is released.
+To create the GeoJSON file, we used the [geojsonio](https://github.com/ropensci/geojsonio) package in R to load a school zone shapefile and then merge it with performance data. GIS programs like arcGIS or QGIS can also do this, but the R code is convenient to quickly refresh the file each time new performance data is released.
 
 In the code snippet above, we're passing functions for the **style** and **onEachFeature** options. Style is determined by the function **colorMap**, shown below. ColorMap gives a color to each school shape according to the school's data. Notice that the colorMap function refers to data, such as "feature.properties.ccrpi_score". These data are included in the geojson file that we loaded above.
 
@@ -95,3 +114,43 @@ With colorMap defined, the map will look like this:
 
 ![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Map%20with%20polygons.PNG)
 
+Next, add the **mapTips** function, which is called by **onEachFeature**. This adds a tooltip to each polygon.
+
+```javascript
+function mapTips(feature, layer ){
+
+	//Write message about each school's enrollment options
+	var message
+	if(feature.properties.enrollment == "none"){message = "Did not offer administrative transfer in 2018."} 
+	else if(feature.properties.enrollment == "some_at"){message = "Accepted administrative transfers in some grades in 2018."}
+	else if(feature.properties.enrollment == "at"){message = "Accepted administrative transfers in all grades in 2018."}
+	else if(feature.properties.enrollment == "charter"){message = "See below for charter enrollment information."}
+	else if(feature.properties.enrollment == "open"){message = "See below for single gender enrollment information."}
+
+	//Style each performance data point- rounding, missing data, etc...
+	var ccrpi_text
+	if(feature.properties.ccrpi_score){ccrpi_text = Math.round(feature.properties.ccrpi_score*10)/10}
+	else{ccrpi_text = "No score."};
+
+	var miles_text
+	if(feature.properties.milestones){miles_text = Math.round(feature.properties.milestones*100) + "%"}
+	else{miles_text = "No score."};
+
+	var growth_text
+	if(feature.properties.sgp){growth_text = Math.round(feature.properties.sgp*100) + "%"}
+	else{growth_text = "No score."};
+
+	var climate_text
+	if(feature.properties.star_rating){climate_text = feature.properties.star_rating + " out of 5"}
+	else{climate_text = "No score."};
+
+	//write the tooltip text in html
+	layer.bindPopup( "<strong><a href=" + feature.properties.link + " target='_blank'>" + feature.properties.school + "</a></strong><br/>"
+	+ "CCRPI 3-Year Average: " + "<strong>" + ccrpi_text + "</strong><br/>"
+	+ "Milestones Proficiency: " + "<strong>" + miles_text + "</strong><br/>"
+	+ "Milestones Growth: " + "<strong>" + growth_text + "</strong><br/>"
+	+ "Climate Stars: " + "<strong>" + climate_text + "</strong><br/>"
+	+ message
+	)
+}
+```
