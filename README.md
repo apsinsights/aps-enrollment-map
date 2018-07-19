@@ -2,7 +2,7 @@
 
 This page has both a school lookup tool and performance color coding. The page is built in Javascript and uses [Leaflet.js](https://leafletjs.com/) for mapping. Read-on to learn how to build it:
 
-##Create Map
+## Create Map
 
 Start by including leaflet files in your header and adding a div for the map:
 
@@ -48,7 +48,7 @@ The map will look  something like this:
 
 ![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Initialize%20Map.PNG)
 
-##Add Polygons
+## Add Polygons
 
 Next, upload school zone shapes as a geojson file and use the Leaflet function [GeoJSON](https://leafletjs.com/reference-1.3.2.html#geojson) to plot said shapes:
 
@@ -118,7 +118,7 @@ With colorMap defined, the map will look like this:
 
 ![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Map%20with%20polygons.PNG)
 
-##Add tooltips
+## Add tooltips
 
 Next, add the **mapTips** function, which is called by **onEachFeature**. This adds a tooltip to each polygon. Notice that we're still using data from our geoJSON file loaded above.
 
@@ -163,6 +163,72 @@ function mapTips(feature, layer ){
 
 Now we have tooltips:
 
-![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Map%20Tooltip.PNG?raw=true)
+![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Map%20Tooltips.PNG)
 
+## Add Points
 
+We also need to add points for schools that don't have traditional school zones. Notice that this code is able to use the same functions as the polygons- **colorMap** and **mapTips**.
+
+```javascript
+$.getJSON("https://apsinsights.org/documents/2018/05/enrollment-map-school-points.txt/",function(points){
+	mapPoints = L.geoJson(points, {
+		pointToLayer: function(feature,latlng){
+			return L.circleMarker(latlng,{radius:9});
+		},
+		style: colorMap,
+		onEachFeature: mapTips,
+		filter: function(feature){
+			if(feature.properties.level == "E"){return true}
+		}
+	}).addTo(performMap);
+})
+```
+
+Now the map has shapes and points:
+
+![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Map%20with%20points.PNG)
+
+## Add legend and info button
+
+Next we'll add a color legend and an info button using leaflet's [control](https://leafletjs.com/reference-1.3.2.html#control) class.
+
+```javascript
+//make color legend
+var legend = L.control({position: 'topright'});
+legend.onAdd = function (map) {
+	var div = L.DomUtil.create('div', 'info')
+	div.innerHTML =
+		'CCRPI<br>3-year<br>average<br><i class="fa fa-square" style="color:#58A667"></i> >90<br><i class="fa fa-square" style="color:#72C282"></i> 80-89<br><i class="fa fa-square" style="color:#A0D797"></i> 70-79<br><i class="fa fa-square" style="color:#FFE183"></i> 60-69<br><i class="fa fa-square" style="color:#FF856E"></i> 50-59<br><i class="fa fa-square" style="color:#C43948"></i> <50<br>'
+	return div;
+};
+legend.addTo(performMap);
+
+//make info button
+var infoButton = L.control({position: 'bottomleft'});
+infoButton.onAdd = function (map) {
+	var div = L.DomUtil.create('div', 'infoButton')
+	div.innerHTML =
+		"<span class='w3-tooltip'><img src='https://apsinsights.org/wp-content/uploads/2018/05/info-button.png' height='30' width='30'><div class='w3-text w3-light-gray w3-small w3-border w3-round-large' style='position:absolute; bottom:25px; left:1px; width:300px; z-index:1000; text-align:left; padding:4px 8px;'>The map is color-coded by each school's <strong>CCRPI three-year average</strong>. The three-year average is used because CCRPI fluctuates from year to year and the three-year average is more predictive of future performance.<br><br> Tap or click a school to view additional indicators:<br> -2017 Milestones <b>proficiency</b> (average of reading and math).<br>-3-year average of the percentage of students with typical or high <b>growth</b>, which uses the state's student growth percentile results.<br>-State <b>climate</b> star ratings.</div></span>"
+	return div;
+};
+infoButton.addTo(performMap);
+```
+
+The info button gives information on hover, and uses the [w3.css library](https://www.w3schools.com/w3css/) to make and style the tooltip. The w3.css library uses class names like, "w3-tooltip" to assign styles.
+
+To style to color legend, we use the div name for the color legend (the color legend's div name is "info") to add css.
+
+```css
+.info {
+	padding: 6px 8px;
+	/*font: 14px/16px Arial, Helvetica, sans-serif;*/
+	background: white;
+	background: rgba(255,255,255,0.8);
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	border-radius: 5px;
+}
+```
+
+Now we have a color legend and a hover info button:
+
+![]()
