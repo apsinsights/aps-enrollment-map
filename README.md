@@ -23,7 +23,11 @@ var performMap = L.map('mapid').setView([33.77, -84.41], 11);
 	}).addTo(performMap);
 ```
 
-Next, upload school zone shapes as a geojson file and use the Leaflet function [GeoJSON](https://leafletjs.com/reference-1.3.2.html#geojson) to plot:
+The map will look  something like this:
+
+![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Initialize%20Map.PNG)
+
+Next, upload school zone shapes as a geojson file and use the Leaflet function [GeoJSON](https://leafletjs.com/reference-1.3.2.html#geojson) to plot said shapes:
 
 ```javascript
 	$.getJSON("https://apsinsights.org/documents/2018/05/enrollment-map-elementary-zones.txt",function(zones){
@@ -34,10 +38,15 @@ Next, upload school zone shapes as a geojson file and use the Leaflet function [
 		mapFill.bringToBack();
 	})
 ```
-In the code above, we're passing functions for the **style** and **onEachFeature** options. Style is determined by the function **colorMap**, shown below. ColorMap gives a color to each school shape according to the school's data. Notice that the colorMap function refers to data, such as "feature.properties.ccrpi_score". These data are included in the geojson file that we loaded above.
+With the [JSON Viewer extension](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) in chrome you can view the [enrollment-map-elementary-zones](https://apsinsights.org/documents/2018/05/enrollment-map-elementary-zones.txt) file we load in the code.
+
+To create the GeoJSON file, we used the [geojsonio](https://github.com/ropensci/geojsonio) package in R to load a school zone shapefile and then merge it with performance data. GIS programs like arcGIS or QGIS can also convert do this, but the R code is helpful to quickly refresh the file each time new performance data is released.
+
+In the code snippet above, we're passing functions for the **style** and **onEachFeature** options. Style is determined by the function **colorMap**, shown below. ColorMap gives a color to each school shape according to the school's data. Notice that the colorMap function refers to data, such as "feature.properties.ccrpi_score". These data are included in the geojson file that we loaded above.
 
 ```javascript
 var metric ='CCRPI';
+//Set metric to "CCRPI" so a value is set on page load. We'll change this later when we build a filter to select a metric.
 
 function colorMap(feature){
 		var fillColor,
@@ -50,6 +59,7 @@ function colorMap(feature){
 			else if ( ccrpi >= 50 ) fillColor = "#FF856E";
 			else if ( ccrpi > 0 ) fillColor = "#C43948";
 			else fillColor = "#888888";}
+		//these other options will be used later
 		else if (metric == 'Milestones'){
 			milestones = Math.round(feature.properties.milestones*100);
 			if( milestones >= 75 ) fillColor = "#58A667";
@@ -76,6 +86,12 @@ function colorMap(feature){
 			else if ( climate == 2 ) fillColor = "#FF856E";
 			else if ( climate == 1 ) fillColor = "#C43948";
 			else fillColor = "#888888";}
+		///the return line below is passed to style the polygons
 		return { color: "WhiteSmoke", weight: 1, fillColor: fillColor, fillOpacity: .8 }; 
 	}
 ```
+
+With colorMap defined, the map will look like this:
+
+![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Map%20with%20polygons.PNG)
+
