@@ -29,19 +29,13 @@ Next, [initialize a Leaflet map](https://leafletjs.com/examples/quick-start/):
 var performMap = L.map('mapid').setView([33.77, -84.41], 11);
 //"mapid" is the name of the div where the map will go
 //"33.77,-84.11" are lat/long to center the map in Atlanta, "11" is the zoom level
-	
-	performMap.on('tileerror', function(error, tile) {
-		console.log(error);
-		console.log(tile);
-		alert("Fail")
-	});
 
-	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-		attribution: '<a href="http://openstreetmap.org">OpenStreetMap</a> | <a href="http://mapbox.com">Mapbox</a>',
-		maxZoom: 18,
-		id: 'mapbox.streets-basic', //see free options here: https://www.mapbox.com/api-documentation/#maps
-		accessToken: 'your.mapbox.access.token', //enter your mapbox access token here
-	}).addTo(performMap);
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+	attribution: '<a href="http://openstreetmap.org">OpenStreetMap</a> | <a href="http://mapbox.com">Mapbox</a>',
+	maxZoom: 18,
+	id: 'mapbox.streets-basic', //see free options here: https://www.mapbox.com/api-documentation/#maps
+	accessToken: 'your.mapbox.access.token', //enter your mapbox access token here
+}).addTo(performMap);
 ```
 
 The map will look  something like this:
