@@ -219,7 +219,7 @@ The info button gives information on hover, and uses the [w3.css library](https:
 To style to color legend, we use the div name for the color legend (the color legend's div name is "info") to add css.
 
 ```css
-.info, colorButton{
+.info, .colorButton{
 	padding: 6px 8px;
 	/*font: 14px/16px Arial, Helvetica, sans-serif;*/
 	background: white;
@@ -252,16 +252,9 @@ Notice the color filter hass class name "kickoff". We then use any change to the
 
 ```javascript
 $('.kickoff').on('change', function() {
-	var path		
-	var level
 	
 	//get filter value
 	metric = ($('#colorSelect').val())
-
-	//get path to geoJSON file based on filter selection
-	if($('#levelFilter').val() == 0){path = "https://apsinsights.org/documents/2018/05/enrollment-map-elementary-zones.txt"; level = 'E'}
-	else if($('#levelFilter').val() == 1){path = "https://apsinsights.org/documents/2018/05/enrollment-map-middle-zones.txt"; level = 'M'}
-	else if($('#levelFilter').val() == 2){path = "https://apsinsights.org/documents/2018/05/enrollment-map-high-zones.txt"; level = 'H'}
 
 	//drop current shapes and points
 	mapFill.remove(performMap)
@@ -282,7 +275,7 @@ $('.kickoff').on('change', function() {
 	}
 
 	//redraw shapes
-	$.getJSON(path,function(zones){
+	$.getJSON("https://apsinsights.org/documents/2018/05/enrollment-map-elementary-zones.txt",function(zones){
 		mapFill = L.geoJson(zones, {		
 			style: colorMap,				
 			onEachFeature: mapTips
@@ -298,16 +291,18 @@ $('.kickoff').on('change', function() {
 
 			pointToLayer: function(feature,latlng){
 				marker = L.circleMarker(latlng,{radius:9});
-				//marker = L.marker(latlng);
-				oms.addMarker(marker);
 				return marker;
 			},
 			style: colorMap,
-			onEachFeature: mapTips, //use spiderfier here...
+			onEachFeature: mapTips, 
 			filter: function(feature){
-				if(feature.properties.level == level){return true}
+				if(feature.properties.level == 'E'){return true}
 			}
 		}).addTo(performMap);	
 	})	
 })
 ```
+
+Now we have a working color filter:
+
+![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Enrollment%20map%20color%20switch.gif)
