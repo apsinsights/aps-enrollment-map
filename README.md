@@ -2,7 +2,7 @@
 
 This page has both a school lookup tool and performance color coding. The page is built in Javascript and uses [Leaflet.js](https://leafletjs.com/) for mapping. Read-on to learn how to build it:
 
-## Create Map
+## Create map
 
 Start by including leaflet files in your header and adding a div for the map:
 
@@ -48,7 +48,7 @@ The map will look  something like this:
 
 ![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Initialize%20Map.PNG)
 
-## Add Polygons
+## Add polygons
 
 Next, upload school zone shapes as a geojson file and use the Leaflet function [GeoJSON](https://leafletjs.com/reference-1.3.2.html#geojson) to plot said shapes:
 
@@ -165,7 +165,7 @@ Now we have tooltips:
 
 ![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Map%20Tooltips.PNG)
 
-## Add Points
+## Add points
 
 We also need to add points for schools that don't have traditional school zones. Notice that this code is able to use the same functions as the polygons- **colorMap** and **mapTips**.
 
@@ -190,7 +190,7 @@ Now the map has shapes and points:
 
 ## Add legend and info button
 
-Next we'll add a color legend and an info button using leaflet's [control](https://leafletjs.com/reference-1.3.2.html#control) class.
+Next we'll add a color legend and an info button using leaflet's [control](https://leafletjs.com/reference-1.3.2.html#control) class. These features are added in Leaflet, but mostly written in html using "div.innerHTML".
 
 ```javascript
 //make color legend
@@ -219,7 +219,7 @@ The info button gives information on hover, and uses the [w3.css library](https:
 To style to color legend, we use the div name for the color legend (the color legend's div name is "info") to add css.
 
 ```css
-.info {
+.info, colorButton{
 	padding: 6px 8px;
 	/*font: 14px/16px Arial, Helvetica, sans-serif;*/
 	background: white;
@@ -232,3 +232,82 @@ To style to color legend, we use the div name for the color legend (the color le
 Now we have a color legend and a hover info button:
 
 ![](https://github.com/johnkeltz/aps-enrollment-map/blob/master/images/Hover%20button%20example.gif?raw=true)
+
+## Add color filter
+
+First, we'll add the menu, similarly to how we added the last two features. It uses the same css as the color legend above.
+
+```javascript
+var colorButton = L.control({position: 'bottomright'});
+colorButton.onAdd = function (map) {
+	var div = L.DomUtil.create('div', 'colorButton')
+	div.innerHTML =
+		'Color by:<div class="selectDiv"><select id="colorSelect" class="kickoff"><option value="CCRPI">CCRPI</option><option value="Milestones">Milestones</option><option value="Growth">Growth</option><option value="Climate">Climate</option></select></div>'
+	return div;
+};
+colorButton.addTo(performMap);
+```
+
+Notice the color filter hass class name "kickoff". We then use any change to the kickoff class (i.e. a filter selection) to trigger the code below. The code below redraws the color key, shapes, and points according to the filter selection.
+
+```javascript
+$('.kickoff').on('change', function() {
+	var path		
+	var level
+	
+	//get filter value
+	metric = ($('#colorSelect').val())
+
+	//get path to geoJSON file based on filter selection
+	if($('#levelFilter').val() == 0){path = "https://apsinsights.org/documents/2018/05/enrollment-map-elementary-zones.txt"; level = 'E'}
+	else if($('#levelFilter').val() == 1){path = "https://apsinsights.org/documents/2018/05/enrollment-map-middle-zones.txt"; level = 'M'}
+	else if($('#levelFilter').val() == 2){path = "https://apsinsights.org/documents/2018/05/enrollment-map-high-zones.txt"; level = 'H'}
+
+	//drop current shapes and points
+	mapFill.remove(performMap)
+	mapPoints.remove(performMap)
+
+	//write new color key
+	if(metric == 'CCRPI'){
+		$(".info").html('CCRPI<br>3-year<br>average<br><i class="fa fa-square" style="color:#58A667"></i> >90<br><i class="fa fa-square" style="color:#72C282"></i> 80-89<br><i class="fa fa-square" style="color:#A0D797"></i> 70-79<br><i class="fa fa-square" style="color:#FFE183"></i> 60-69<br><i class="fa fa-square" style="color:#FF856E"></i> 50-59<br><i class="fa fa-square" style="color:#C43948"></i> <50<br>')
+	}
+	else if(metric=='Milestones'){
+		$(".info").html('Milestones<br>Proficiency<br><i class="fa fa-square" style="color:#58A667"></i> >75%<br><i class="fa fa-square" style="color:#72C282"></i> 60-74%<br><i class="fa fa-square" style="color:#A0D797"></i> 45-59%<br><i class="fa fa-square" style="color:#FFE183"></i> 30-44%<br><i class="fa fa-square" style="color:#FF856E"></i> 15-29%<br><i class="fa fa-square" style="color:#C43948"></i> <15%<br>')
+	}
+	else if(metric=='Growth'){
+		$(".info").html('Growth<br>3-year<br>average<br><i class="fa fa-square" style="color:#58A667"></i> >75%<br><i class="fa fa-square" style="color:#72C282"></i> 70-74%<br><i class="fa fa-square" style="color:#A0D797"></i> 65-69%<br><i class="fa fa-square" style="color:#FFE183"></i> 60-64%<br><i class="fa fa-square" style="color:#FF856E"></i> 55-59%<br><i class="fa fa-square" style="color:#C43948"></i> <55%<br>')
+	}
+	else if(metric=='Climate'){
+		$(".info").html('Climate<br>Stars<br><i class="fa fa-square" style="color:#58A667"></i> 5<br><i class="fa fa-square" style="color:#A0D797"></i> 4<br><i class="fa fa-square" style="color:#FFE183"></i> 3<br><i class="fa fa-square" style="color:#FF856E"></i> 2<br><i class="fa fa-square" style="color:#C43948"></i> 1<br>')
+	}
+
+	//redraw shapes
+	$.getJSON(path,function(zones){
+		mapFill = L.geoJson(zones, {		
+			style: colorMap,				
+			onEachFeature: mapTips
+		}).addTo(performMap); 
+
+		mapFill.bringToBack();
+	})
+
+	//redraw points
+	$.getJSON("https://apsinsights.org/documents/2018/05/enrollment-map-school-points.txt/",function(points){
+
+		mapPoints = L.geoJson(points, {
+
+			pointToLayer: function(feature,latlng){
+				marker = L.circleMarker(latlng,{radius:9});
+				//marker = L.marker(latlng);
+				oms.addMarker(marker);
+				return marker;
+			},
+			style: colorMap,
+			onEachFeature: mapTips, //use spiderfier here...
+			filter: function(feature){
+				if(feature.properties.level == level){return true}
+			}
+		}).addTo(performMap);	
+	})	
+})
+```
