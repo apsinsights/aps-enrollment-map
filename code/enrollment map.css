@@ -1,0 +1,102 @@
+body {
+	font: 14px/16px Arial, Helvetica, sans-serif;
+}
+
+#mapid { height: 500px; }
+
+.info, .colorButton {
+	padding: 6px 8px;
+	/*font: 14px/16px Arial, Helvetica, sans-serif;*/
+	background: white;
+	background: rgba(255,255,255,0.8);
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	border-radius: 5px;
+}
+
+#levelFilter{
+	font-size: 14px;
+	/*font-family: Verdana,sans-serif;*/
+	color: #444444;
+	line-height: 20px;
+	padding: 3px 20px 3px 7px;
+	width: 100px;
+	border-radius: 4px;
+}
+
+.selectDiv .ajaxFire{
+	-webkit-appearance: none;  /*Removes default chrome and safari style*/
+	-moz-appearance: none;  /*Removes default style Firefox*/
+	background: url('https://apsinsights.org/wp-content/uploads/2018/05/grey-arrow-18-24.png')  no-repeat;
+	background-position: 78px 1px; 
+}
+	
+.minimal {
+  background-image:
+	linear-gradient(45deg, transparent 50%, gray 50%),
+	linear-gradient(135deg, gray 50%, transparent 50%),
+	linear-gradient(to right, #ccc, #ccc);
+  background-position:
+	calc(100% - 20px) calc(1em + 2px),
+	calc(100% - 15px) calc(1em + 2px),
+	calc(100% - 2.5em) 0.5em;
+  background-size:
+	5px 5px,
+	5px 5px,
+	1px 1.5em;
+  background-repeat: no-repeat;
+}
+
+.filters{
+	display:inline-block;
+}
+
+.leftDesk{
+	float:left;
+}
+
+.pointerImage{
+	padding-right:2px;
+}
+
+
+/* Style the buttons that are used to open and close the accordion panel */
+.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+    text-transform:capitalize;
+    margin: 0px;
+    border-radius: 0px;
+    font-size: 16px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .accordion:hover {
+    background-color: #0083A9 !important;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+#textAdmin{
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+    overflow: hidden;
+}
+
+	
+@media only screen and (max-width: 600px) { 
+	/*.map{width: 100vw;}*/
+	.break{padding-bottom:10px;}
+	.leftDesk{float:none;}
+	.leftDesk2{float:none;}
+	#levelFilter{width:220px}
+	.pointerImage{margin-right:4px; margin-left:2px;}
+	.homePin{padding-right:3px;}
+	.selectDiv select{background-position: 198px 1px;}
+}
