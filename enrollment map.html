@@ -1,0 +1,116 @@
+<head>
+
+    <title>Enrollment Map</title>
+	
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<!-- load overlapping marker fix (spiderfier leaflet) -->
+	<script src="https://apsinsights.org/wp-content/uploads/2018/05/spiderfier.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier-Leaflet/0.2.6/oms.min.js"></script>
+	<!-- Load select2 -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script> 	
+	
+	<!-- Load w3 css -->
+	<!-- <link rel="stylesheet" href="https://apsinsights.org/wp-content/uploads/2018/03/custom_w3.css"> -->
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+
+</head>
+
+<body>
+
+<!--note- code contains several "[]" tags, which are specific to the APS Insights wordpress environment -->
+
+<script>
+
+
+</script>
+
+Use the tool below to find your zoned school and compare nearby schools. Scroll down for information about different enrollment options.<!-- <a href="#AdminTransfer">administrative transfers</a>, <a href="#Charter">charter enrollment</a>, <a href="#SingleGender">single gender</a>, and <a href="#PreK">pre-K enrollment</a>. --> <br>
+
+
+<div class="break">
+	<img src="https://apsinsights.org/wp-content/uploads/2018/05/People-Icon-Small.png" class="filters" height="32" width="32" style="float:left; padding-right:3px"></img>
+	
+	<div style="padding-right:10px" class="leftDesk">
+		<span style="font-size:90%;">1. Select level</span><br/>
+		<div class="selectDiv">
+			<select id="levelFilter" onchange="filterLevel()" class="filters kickoff ajaxFire">  <!--style="box-shadow: 0px 0px 8px orange;"-->
+				<!-- <option value="">Select a Grade Level</option> -->
+				<option value="0">Elementary</option>
+				<option value="1">Middle</option>
+				<option value="2">High</option>
+			</select>	
+		</div>
+	</div>
+</div>
+
+<div class="break">
+	<img src="https://apsinsights.org/wp-content/uploads/2018/05/home-pin-32.png" height="32" width="32" class="filters homePin" style="float:left;"></img>
+	
+	<div style=" padding-right:12px" class="leftDesk">
+		<span style="font-size:90%;">2. Enter Address</span><br/>
+		<select class="addressSelect ajaxFire notranslate" ></select>
+	</div>
+</div>	
+
+<div>
+	<img src="https://apsinsights.org/wp-content/uploads/2018/05/Mobile-Select.png" class="filters pointerImage" style="float:left; width:26px;height:32px;"></img>
+	<div style=" padding-right:12px">
+		<span style="font-size:90%;">3. Compare Schools</span><br/>
+		<span style="font-size:85%;">Click each school for details.</span>
+	</div>
+</div>
+
+	<br>
+
+<div class="map">
+	<div id="mapid"></div>	
+</div>
+[/raw]
+Click/tap a school to see the achievement, growth, and climate star information.
+<ul>
+ 	<li>CCRPI is the <a href="http://www.gadoe.org/CCRPI/Pages/default.aspx">state school ratings system</a>.</li>
+ 	<li>Milestones Proficiency reports the percentage of students who scored proficient on the <a href="http://www.gadoe.org/Curriculum-Instruction-and-Assessment/Assessment/Pages/Georgia-Milestones-Assessment-System.aspx">state test</a>.</li>
+ 	<li>Milestones Growth reports the percentage of students who made <a href="http://www.gadoe.org/Curriculum-Instruction-and-Assessment/Assessment/Pages/Georgia-Student-Growth-Model.aspx">typical or high growth</a> on the state test.</li>
+ 	<li>Climate Stars is the state's <a href="http://www.gadoe.org/External-Affairs-and-Policy/Policy/Pages/School-Climate.aspx">climate rating system</a>.</li>
+</ul>
+Milestones proficiency and climate report 2017 data, while CCRPI and growth show a three year average.
+
+[raw]
+<!-- <a style="margin-top: -70px; padding-bottom: 70px; display: block;" name="AdminTransfer"></a> -->
+<button id="admin" class="accordion" onclick="showAdmin()">Administrative Transfer <span id="pmAdmin" style="float: right; font-weight: bold;">+</span></button>
+<div id="textAdmin" class="panel">
+<!-- <h1 class="entry-title" style="margin-bottom: 25px;">Administrative Transfer</h1> -->
+Administrative transfer allows students to enroll in APS traditional schools when they do not live in that school zone. The administrative transfer window opens each March for the following school year and is open for three weeks. Schools are typically open for administrative transfer if they have extra classroom space. Although openings are not published until March, the lookup table below shows which schools have offered administrative transfer in the past, which can be predictive of future openings.
+<iframe style="display: block; margin-top: 10px; margin-left: auto; margin-right: auto;" src="https://public.tableau.com/views/AdminTransferInfo_0/AdminTransferLookup?:embed=yes&amp;:display_count=no&amp;:showVizHome=no" width="300" height="327"></iframe>
+For more information on administrative transfers, including how to apply, <a href="http://www.atlantapublicschools.us/Page/52726">see this page</a>.
+[/raw][mc4wp_form id="238"][raw]
+</div>
+
+<!-- <a style="margin-top: -70px; padding-bottom: 70px; display: block;" name="Charter"></a><h1 class="entry-title" style="margin-bottom: 25px;">Charter Enrollment</h1> -->
+<button id="charter" class="accordion" onclick="showCharter()">Charter Enrollment <span id="pmCharter" style="float: right; font-weight: bold;">+</span></button>
+<div id="textCharter" class="panel" style="display:none">[/raw]
+APS charter schools are public schools that operate under a contract with the APS school board. Charter schools have district-wide enrollment zones and are allowed flexibility in their programming in exchange for specific performance goals.
+
+All families living within the Atlanta Public School district may apply to attend an APS charter school. Registration is handled at the individual schools and is only limited by available space. Charter schools may set geographic enrollment priority zones in their charter. Any spaces available after initial registration are filled by lottery. Use the links below to learn how to enroll with each APS charter school, or <a href="http://www.atlanta.k12.ga.us/Page/787">visit this page</a> to learn more about APS charter schools.
+
+[table id=1 /][raw]
+</div><br><br>
+	
+<!-- <a style="margin-top: -70px; padding-bottom: 70px; display: block;" name="SingleGender"></a><h1 class="entry-title" style="margin-bottom: 25px;">Single Gender Enrollment</h1> -->
+<button id="gender" class="accordion" onclick="showGender()">Single Gender Enrollment <span id="pmGender" style="float: right; font-weight: bold;">+</span></button>
+<div id="textGender" class="panel" style="display:none"><br>
+[/raw]Enrollment at the two APS single gender schools, BEST Academy for boys and Coretta Scott King Academy for girls, follow the administrative transfer enrollment process above. Both schools serve grades 6-12. See <a href="https://www.atlantapublicschools.us/Domain/96">this page</a> for more detail and use the email form above for a reminder when the transfer window opens in March.[raw]
+</div><br><br>
+
+<!-- <a style="margin-top: -70px; padding-bottom: 70px; display: block;" name="PreK"></a><h1 class="entry-title" style="margin-bottom: 25px;">Pre-K Enrollment</h1> -->
+<button id="prek" class="accordion" onclick="showPrek()">Pre-K Enrollment <span id="pmPrek" style="float: right; font-weight: bold;">+</span></button><br><br>
+<div id="textPrek" class="panel" style="display:none">
+APS pre-k enrollment typically begins in January. See <a href="http://apsprekapplication.com">APSPreKApplication.com</a> for details.
+</div>
+
+</body>
